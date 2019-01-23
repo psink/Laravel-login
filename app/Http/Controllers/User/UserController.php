@@ -124,26 +124,27 @@ class UserController extends Controller
      */
     public function facebookhandleProviderCallback()
     {
-        $user = Socialite::driver('facebook')->user();
+        $user = Socialite::with('facebook')->stateless()->user();
         $data['name'] = $user->name;
         $data['email'] = $user->email;
         $data['admin'] = 0;
         $data['remember_token'] = $user->token;
-        $user = User::where('email', $data['email'])->first();
-        if(!empty($user)){
-            Auth::login($user);
+        $facebookuser = User::where('email', $data['email'])->first();
+        if(!empty($facebookuser)){
+            Auth::login($facebookuser);
             return redirect('home');
         }
         else{
-           $create = User::create([
+           User::create([
                'name' => $data['name'],
                'email' => $data['email'],
                'password' => bcrypt(''),
-               'admin' => 0
+               'admin' => 0,
+               'remember_token' => $data['remember_token']
            ]);
-           $user = User::where('email', $data['email'])->first();
-           if ($create){
-               Auth::login($user);
+           $facebookuser = User::where('email', $data['email'])->first();
+           if ($facebookuser){
+               Auth::login($facebookuser);
                return redirect('home');
            }
 
@@ -169,25 +170,28 @@ class UserController extends Controller
         $data['email'] = $user->email;
         $data['admin'] = 0;
         $data['remember_token'] = $user->token;
-        $user = User::where('email', $data['email'])->first();
-        if(!empty($user)){
-            Auth::login($user);
+        $facebookuser = User::where('email', $data['email'])->first();
+        if(!empty($facebookuser)){
+            Auth::login($facebookuser);
             return redirect('home');
         }
         else{
-            $create = User::create([
+            User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt(''),
-                'admin' => 0
+                'admin' => 0,
+                'remember_token' => $data['remember_token']
             ]);
-            $user = User::where('email', $data['email'])->first();
-            if ($create){
-                Auth::login($user);
+            $facebookuser = User::where('email', $data['email'])->first();
+            if ($facebookuser){
+                Auth::login($facebookuser);
                 return redirect('home');
             }
 
         }
+
+
     }
 
     public function userLogout(){

@@ -72,7 +72,9 @@
         <div class="col-4">
             <ul>
                 <li class="list-group-item active">chat room</li>
-                <example></example>
+                <example v-for="value in chat.message">
+                    @{{ value }}
+                </example>
                 <input type="text" placeholder="Type message....." class="form-control" v-model='message' @keyup.enter='send'>
             </ul>
         </div>
